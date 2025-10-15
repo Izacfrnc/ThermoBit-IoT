@@ -27,8 +27,8 @@ const chart = new Chart(ctx, {
 
 client.on("connect", () => {
     console.log("Conectado ao broker MQTT");
-    client.subscribe("senai/iot/dh11");
-});
+    client.subscribe("senai/iot/dh11");       
+}); 
 
 client.on("message", (topic, message) => {
     const data = JSON.parse(message.toString());

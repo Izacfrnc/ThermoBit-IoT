@@ -9,10 +9,10 @@ const client = mqtt.connect('mqtt://broker.hivemq.com:1883');
 const topic = "senai/iot/dh11";
 
 client.on('connect', () => {
-    console.log('Connected to MQTT broker');
+    console.log('Connected to MQTT broker'); 
 });
 
-parser.on('data', (line) => {
+parser.on('data', (line) => {   
     try {
         const data = JSON.parse(line.trim());
         console.log('Received data from serial:', data);
