@@ -1,5 +1,4 @@
 // script.js
-
 const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
 
 const labels = [];
