@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Controle Térmico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #f5f6fa;
+            color: #2c3e50;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #7f8c8d;
+        }
+
+        .card .value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        /* CARDS COM CORES DIFERENTES */
+        .temperature-card .value {
+            color: #e74c3c;
+        }
+
+        .humidity-card .value {
+            color: #3498db;
+        }
+
+        .fan-card .value {
+            color: #27ae60;
+        }
+
+        .fan-status {
+            font-size: 20px;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .fan-on {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .fan-off {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* CONFIGURAÇÕES */
+        .config-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .config-card h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .config-item label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .config-item input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* BOTÕES */
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        /* GRÁFICO (SIMULAÇÃO) */
+        .graph-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .graph-placeholder {
+            background: #ecf0f1;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🎯 Controle Térmico - Dashboard</h1>
+        <div class="user-info">
+            <span>Olá, <strong id="current-user">Admin</strong>!</span>
+            <button class="logout-btn" onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container">
+        <!-- CARDS DE STATUS -->
+        <div class="cards-grid">
+            <!-- TEMPERATURA -->
+            <div class="card temperature-card">
+                <h3>🌡️ TEMPERATURA ATUAL</h3>
+                <div class="value" id="temperature-value">27.5°C</div>
+                <p>Status: <span id="temp-status">Normal</span></p>
+            </div>
+
+            <!-- UMIDADE -->
+            <div class="card humidity-card">
+                <h3>💧 UMIDADE</h3>
+                <div class="value" id="humidity-value">65%</div>
+                <p>Umidade relativa do ar</p>
+            </div>
+
+            <!-- VENTILADOR -->
+            <div class="card fan-card">
+                <h3>🌀 VENTILADOR</h3>
+                <div class="value" id="fan-status-text">DESLIGADO</div>
+                <div class="fan-status fan-off" id="fan-status">● OFF</div>
+                <p id="fan-reason">Temperatura abaixo de 30°C</p>
+            </div>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div class="config-card">
+            <h3>⚙️ CONFIGURAÇÕES DO SISTEMA</h3>
+            <div class="config-grid">
+                <div class="config-item">
+                    <label for="temp-on">Ligar ventilador em:</label>
+                    <input type="number" id="temp-on" value="30" min="20" max="40"> °C
+                </div>
+                <div class="config-item">
+                    <label for="temp-off">Desligar ventilador em:</label>
+                    <input type="number" id="temp-off" value="28" min="20" max="40"> °C
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="saveConfig()">Salvar Configurações</button>
+                <button class="btn btn-secondary" onclick="simulateTemperature()">Simular Temperatura +1°C</button>
+            </div>
+        </div>
+
+        <!-- GRÁFICO -->
+        <div class="graph-card">
+            <h3>📊 HISTÓRICO DE TEMPERATURA</h3>
+            <div class="graph-placeholder">
+                Gráfico será implementado aqui
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados iniciais
+        let currentTemperature = 27.5;
+        let currentHumidity = 65;
+        let fanOnTemperature = 30;
+        let fanOffTemperature = 28;
+        let isFanOn = false;
+
+        // Atualizar display
+        function updateDisplay() {
+            // Atualizar temperatura
+            document.getElementById('temperature-value').textContent = currentTemperature.toFixed(1) + '°C';
+            
+            // Atualizar status da temperatura
+            const tempStatus = document.getElementById('temp-status');
+            if (currentTemperature >= fanOnTemperature) {
+                tempStatus.textContent = 'ALTA';
+                tempStatus.style.color = '#e74c3c';
+                tempStatus.style.fontWeight = 'bold';
+            } else {
+                tempStatus.textContent = 'Normal';
+                tempStatus.style.color = '#27ae60';
+            }
+
+            // Atualizar umidade
+            document.getElementById('humidity-value').textContent = currentHumidity + '%';
+
+            // Controlar ventilador
+            controlFan();
+        }
+
+        // Controlar ventilador automaticamente
+        function controlFan() {
+            const fanStatus = document.getElementById('fan-status');
+            const fanStatusText = document.getElementById('fan-status-text');
+            const fanReason = document.getElementById('fan-reason');
+
+            if (currentTemperature >= fanOnTemperature && !isFanOn) {
+                // Ligar ventilador
+                isFanOn = true;
+                fanStatus.textContent = '● ON';
+                fanStatus.className = 'fan-status fan-on';
+                fanStatusText.textContent = 'LIGADO';
+                fanReason.textContent = 'Temperatura atingiu ' + fanOnTemperature + '°C';
+                
+            } else if (currentTemperature <= fanOffTemperature && isFanOn) {
+                // Desligar ventilador
+                isFanOn = false;
+                fanStatus.textContent = '● OFF';
+                fanStatus.className = 'fan-status fan-off';
+                fanStatusText.textContent = 'DESLIGADO';
+                fanReason.textContent = 'Temperatura caiu para ' + fanOffTemperature + '°C';
+            }
+        }
+
+        // Salvar configurações
+        function saveConfig() {
+            fanOnTemperature = parseInt(document.getElementById('temp-on').value);
+            fanOffTemperature = parseInt(document.getElementById('temp-off').value);
+            
+            alert('Configurações salvas! \nLigar em: ' + fanOnTemperature + '°C \nDesligar em: ' + fanOffTemperature + '°C');
+            updateDisplay();
+        }
+
+        // Simular mudança de temperatura
+        function simulateTemperature() {
+            currentTemperature += 1;
+            if (currentTemperature > 35) {
+                currentTemperature = 25; // Reset
+            }
+            updateDisplay();
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Deseja sair do sistema?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+            
+            // Simular mudanças automáticas a cada 5 segundos
+            setInterval(() => {
+                // Pequena variação aleatória
+                currentTemperature += (Math.random() - 0.5) * 0.5;
+                currentHumidity = 60 + Math.random() * 10;
+                updateDisplay();
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
