@@ -372,23 +372,23 @@
             <!-- TEMPERATURA -->
             <div class="card temperature-card">
                 <h3>TEMPERATURA ATUAL</h3>
-                <div class="value" id="temperature-value">27.5°C</div>
-                <p>Status: <span id="temp-status">Normal</span></p>
+                <div class="value" id="temperature-value">-- °C</div>
+                <p>Status: <span id="temp-status">Aguardando dados</span></p>
             </div>
 
             <!-- UMIDADE -->
             <div class="card humidity-card">
                 <h3>UMIDADE</h3>
-                <div class="value" id="humidity-value">65%</div>
+                <div class="value" id="humidity-value">--%</div>
                 <p>Umidade relativa do ar</p>
             </div>
 
             <!-- VENTILADOR -->
             <div class="card fan-card">
                 <h3>VENTILADOR</h3>
-                <div class="value" id="fan-status-text">DESLIGADO</div>
-                <div class="fan-status fan-off" id="fan-status">● OFF</div>
-                <p id="fan-reason">Temperatura abaixo de 30°C</p>
+                <div class="value" id="fan-status-text">--</div>
+                <div class="fan-status fan-off" id="fan-status">● AGUARDANDO</div>
+                <p id="fan-reason">Aguardando dados do sensor</p>
             </div>
         </div>
 
@@ -407,7 +407,7 @@
             </div>
             <div class="buttons">
                 <button class="btn btn-primary" onclick="saveConfig()">Salvar Configurações</button>
-                <button class="btn btn-secondary" onclick="simulateTemperature()">Simular Temperatura +1°C</button>
+                <button class="btn btn-secondary" onclick="refreshData()">Atualizar Dados</button>
             </div>
         </div>
 
@@ -422,8 +422,8 @@
 
     <script>
         // Dados iniciais
-        let currentTemperature = 27.5;
-        let currentHumidity = 65;
+        let currentTemperature = null;
+        let currentHumidity = null;
         let fanOnTemperature = 30;
         let fanOffTemperature = 28;
         let isFanOn = false;
@@ -452,21 +452,30 @@
         // Atualizar display
         function updateDisplay() {
             // Atualizar temperatura
-            document.getElementById('temperature-value').textContent = currentTemperature.toFixed(1) + '°C';
-
-            // Atualizar status da temperatura
+            const tempValue = document.getElementById('temperature-value');
             const tempStatus = document.getElementById('temp-status');
-            if (currentTemperature >= fanOnTemperature) {
-                tempStatus.textContent = 'ALTA';
-                tempStatus.style.color = 'var(--temperature-color)';
-                tempStatus.style.fontWeight = 'bold';
+            
+            if (currentTemperature === null) {
+                tempValue.textContent = '-- °C';
+                tempStatus.textContent = 'Aguardando dados';
+                tempStatus.style.color = 'var(--text-secondary)';
             } else {
-                tempStatus.textContent = 'Normal';
-                tempStatus.style.color = 'var(--fan-on-color)';
+                tempValue.textContent = currentTemperature.toFixed(1) + '°C';
+
+                // Atualizar status da temperatura
+                if (currentTemperature >= fanOnTemperature) {
+                    tempStatus.textContent = 'ALTA';
+                    tempStatus.style.color = 'var(--temperature-color)';
+                    tempStatus.style.fontWeight = 'bold';
+                } else {
+                    tempStatus.textContent = 'Normal';
+                    tempStatus.style.color = 'var(--fan-on-color)';
+                }
             }
 
             // Atualizar umidade
-            document.getElementById('humidity-value').textContent = currentHumidity + '%';
+            const humidityValue = document.getElementById('humidity-value');
+            humidityValue.textContent = currentHumidity === null ? '--%' : currentHumidity + '%';
 
             // Controlar ventilador
             controlFan();
@@ -477,6 +486,14 @@
             const fanStatus = document.getElementById('fan-status');
             const fanStatusText = document.getElementById('fan-status-text');
             const fanReason = document.getElementById('fan-reason');
+
+            if (currentTemperature === null) {
+                fanStatus.textContent = '● AGUARDANDO';
+                fanStatus.className = 'fan-status fan-off';
+                fanStatusText.textContent = '--';
+                fanReason.textContent = 'Aguardando dados do sensor';
+                return;
+            }
 
             if (currentTemperature >= fanOnTemperature && !isFanOn) {
                 // Ligar ventilador
@@ -507,13 +524,27 @@
             updateDisplay();
         }
 
-        // Simular mudança de temperatura
-        function simulateTemperature() {
-            currentTemperature += 1;
-            if (currentTemperature > 35) {
-                currentTemperature = 25; // Reset
-            }
+        // Atualizar dados (função para integrar com dados reais)
+        function updateSensorData(temperature, humidity) {
+            currentTemperature = temperature;
+            currentHumidity = humidity;
             updateDisplay();
+        }
+
+        // Função para buscar dados do servidor/API
+        function fetchSensorData() {
+            // EXEMPLO: Substitua esta função pela sua lógica real de busca de dados
+            // Esta é uma simulação - remova quando conectar com dados reais
+            console.log('Buscar dados do sensor...');
+            
+            // Para teste rápido, descomente a linha abaixo:
+            // updateSensorData(29.5, 68);
+        }
+
+        // Atualizar dados manualmente
+        function refreshData() {
+            fetchSensorData();
+            alert('Buscando dados atualizados...');
         }
 
         // Logout
@@ -527,52 +558,15 @@
         document.addEventListener('DOMContentLoaded', function () {
             updateDisplay();
             
-            // Simular mudanças automáticas a cada 5 segundos
-            setInterval(() => {
-                // Pequena variação aleatória
-                currentTemperature += (Math.random() - 0.5) * 0.5;
-                currentHumidity = 60 + Math.random() * 10;
-                updateDisplay();
-            }, 5000);
+            // Buscar dados iniciais
+            fetchSensorData();
+            
+            // Opcional: Atualizar dados automaticamente a cada X segundos
+            // setInterval(fetchSensorData, 5000); // 5 segundos
         });
-    </script>
-    <!-- Code injected by live-server -->
-    <script>
-        // <![CDATA[  <-- For SVG support
-        if ('WebSocket' in window) {
-            (function () {
-                function refreshCSS() {
-                    var sheets = [].slice.call(document.getElementsByTagName("link"));
-                    var head = document.getElementsByTagName("head")[0];
-                    for (var i = 0; i < sheets.length; ++i) {
-                        var elem = sheets[i];
-                        var parent = elem.parentElement || head;
-                        parent.removeChild(elem);
-                        var rel = elem.rel;
-                        if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-                            var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-                            elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-                        }
-                        parent.appendChild(elem);
-                    }
-                }
-                var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-                var address = protocol + window.location.host + window.location.pathname + '/ws';
-                var socket = new WebSocket(address);
-                socket.onmessage = function (msg) {
-                    if (msg.data == 'reload') window.location.reload();
-                    else if (msg.data == 'refreshcss') refreshCSS();
-                };
-                if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-                    console.log('Live reload enabled.');
-                    sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-                }
-            })();
-        }
-        else {
-            console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-        }
-        // ]]>
+
+        // Função global para atualização externa
+        window.updateSensorData = updateSensorData;
     </script>
 </body>
 
