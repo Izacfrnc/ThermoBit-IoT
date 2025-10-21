@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard IoT - Controle Térmico</title>
+    <title>Controle Térmico</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -28,15 +29,14 @@
         }
 
         [data-theme="dark"] {
-            /* Cores modo escuro */  
-            --bg-primary: #312c2c;
-            --bg-secondary: #1a1919;
-            --bg-card: #191a1b;
-            --text-primary: #ffffff; 
-            --text-secondary: #373434;
-            --accent-primary: #897f7f;
-            --accent-secondary: #4361ee;
-            --shadow: rgba(185, 185, 185, 0.3);
+            /* Cores modo escuro */
+            --bg-primary: #1b1b1b;
+            --bg-secondary: #2d2d2d;
+            --bg-card: #2d2d2d;
+            --text-primary: #c5c5c5;
+            --accent-primary: #363636;
+            --accent-secondary: #9b9b9b;
+            --shadow: rgba(54, 54, 54, 0.3);
             --temperature-color: #f94144;
             --humidity-color: #4cc9f0;
             --fan-on-color: #4ade80;
@@ -44,8 +44,8 @@
             --logout-bg: #dc2626;
             --logout-hover: #b91c1c;
             --border-color: #374151;
-            --toggle-bg: #4cc9f0;
-            --toggle-circle: #1a1a2e;
+            --toggle-bg: #84848400;
+            --toggle-circle: #c5c5c5;
         }
 
         * {
@@ -53,7 +53,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            transition: background-color 0.5s, color 0.5s, border-color 0.5s;
         }
 
         body {
@@ -152,11 +152,11 @@
             border-radius: 50%;
         }
 
-        input:checked + .toggle-slider {
+        input:checked+.toggle-slider {
             background-color: var(--accent-primary);
         }
 
-        input:checked + .toggle-slider:before {
+        input:checked+.toggle-slider:before {
             transform: translateX(30px);
         }
 
@@ -287,7 +287,7 @@
 
         .btn-primary {
             background: var(--accent-primary);
-            color: white;
+            color: rgb(255, 255, 255);
         }
 
         .btn-primary:hover {
@@ -329,26 +329,27 @@
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             .header-controls {
                 width: 100%;
                 justify-content: space-between;
             }
-            
+
             .cards-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .buttons {
                 flex-direction: column;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- HEADER -->
     <div class="header">
-        <h1>🌡️ Controle Térmico - Dashboard</h1>
+        <h1>Controle Térmico</h1>
         <div class="header-controls">
             <div class="theme-toggle">
                 <span class="toggle-label">Modo Escuro</span>
@@ -358,7 +359,7 @@
                 </label>
             </div>
             <div class="user-info">
-                <span>Olá, <strong id="current-user">Admin</strong>!</span>
+                <span>Olá, <strong id="current-user"></strong>!</span>
                 <button class="logout-btn" onclick="logout()">Sair</button>
             </div>
         </div>
@@ -430,7 +431,7 @@
         // Configuração do tema
         const themeToggle = document.getElementById('theme-toggle');
         const currentTheme = localStorage.getItem('theme') || 'light';
-        
+
         // Aplicar tema salvo
         if (currentTheme === 'dark') {
             document.body.setAttribute('data-theme', 'dark');
@@ -438,7 +439,7 @@
         }
 
         // Alternar tema
-        themeToggle.addEventListener('change', function() {
+        themeToggle.addEventListener('change', function () {
             if (this.checked) {
                 document.body.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
@@ -452,7 +453,7 @@
         function updateDisplay() {
             // Atualizar temperatura
             document.getElementById('temperature-value').textContent = currentTemperature.toFixed(1) + '°C';
-            
+
             // Atualizar status da temperatura
             const tempStatus = document.getElementById('temp-status');
             if (currentTemperature >= fanOnTemperature) {
@@ -485,7 +486,7 @@
                 fanStatusText.textContent = 'LIGADO';
                 fanStatusText.style.color = 'var(--fan-on-color)';
                 fanReason.textContent = 'Temperatura atingiu ' + fanOnTemperature + '°C';
-                
+
             } else if (currentTemperature <= fanOffTemperature && isFanOn) {
                 // Desligar ventilador
                 isFanOn = false;
@@ -501,7 +502,7 @@
         function saveConfig() {
             fanOnTemperature = parseInt(document.getElementById('temp-on').value);
             fanOffTemperature = parseInt(document.getElementById('temp-off').value);
-            
+
             alert('Configurações salvas! \nLigar em: ' + fanOnTemperature + '°C \nDesligar em: ' + fanOffTemperature + '°C');
             updateDisplay();
         }
@@ -523,7 +524,7 @@
         }
 
         // Inicializar
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             updateDisplay();
             
             // Simular mudanças automáticas a cada 5 segundos
@@ -535,5 +536,44 @@
             }, 5000);
         });
     </script>
+    <!-- Code injected by live-server -->
+    <script>
+        // <![CDATA[  <-- For SVG support
+        if ('WebSocket' in window) {
+            (function () {
+                function refreshCSS() {
+                    var sheets = [].slice.call(document.getElementsByTagName("link"));
+                    var head = document.getElementsByTagName("head")[0];
+                    for (var i = 0; i < sheets.length; ++i) {
+                        var elem = sheets[i];
+                        var parent = elem.parentElement || head;
+                        parent.removeChild(elem);
+                        var rel = elem.rel;
+                        if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+                            var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+                            elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+                        }
+                        parent.appendChild(elem);
+                    }
+                }
+                var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+                var address = protocol + window.location.host + window.location.pathname + '/ws';
+                var socket = new WebSocket(address);
+                socket.onmessage = function (msg) {
+                    if (msg.data == 'reload') window.location.reload();
+                    else if (msg.data == 'refreshcss') refreshCSS();
+                };
+                if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+                    console.log('Live reload enabled.');
+                    sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+                }
+            })();
+        }
+        else {
+            console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+        }
+        // ]]>
+    </script>
 </body>
+
 </html>
