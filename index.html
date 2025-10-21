@@ -414,9 +414,7 @@
         <!-- GRÁFICO -->
         <div class="graph-card">
             <h3>HISTÓRICO DE TEMPERATURA</h3>
-            <div class="graph-placeholder">
-                Gráfico será implementado aqui
-            </div>
+                <canvas id="grafico" width="400" height="200" style="background:var(--bg-secondary); border-radius:8px; padding:8px;"></canvas>
         </div>
     </div>
 
@@ -568,6 +566,8 @@
         // Função global para atualização externa
         window.updateSensorData = updateSensorData;
     </script>
+        <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+        <script src="script.js"></script>
 </body>
 
 </html>
