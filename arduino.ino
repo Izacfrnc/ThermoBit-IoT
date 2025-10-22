@@ -32,11 +32,13 @@ void loop() {
     if (Serial.available() > 0) {
         String cmd = Serial.readStringUntil('\n');
         cmd.trim();
-        // Aceita comandos simples: FAN:ON ou FAN:OFF
-        if (cmd.startsWith("FAN:ON")) {
+        // Agora aceitamos comandos JSON simples, por exemplo:
+        // {"cmd":"FAN","value":"ON"}
+        // ou {"cmd":"FAN","value":"OFF"}
+        if (cmd.indexOf("\"value\":\"ON\"") >= 0) {
             digitalWrite(FAN_PIN, HIGH);
             Serial.println("{\"fan\":\"ON\"}");
-        } else if (cmd.startsWith("FAN:OFF")) {
+        } else if (cmd.indexOf("\"value\":\"OFF\"") >= 0) {
             digitalWrite(FAN_PIN, LOW);
             Serial.println("{\"fan\":\"OFF\"}");
         }

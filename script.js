@@ -100,8 +100,8 @@ function updateFanUI(isOn) {
 
 function publishFanControl(cmd) {
   if (!client || !client.connected) return console.warn('MQTT client not connected');
-  // Envia string simples 'FAN:ON' ou JSON para controle
-  const payload = cmd; // por compatibilidade com o bridge
+  // Envia JSON: {"cmd":"FAN","value":"ON"}
+  const payload = JSON.stringify({ cmd: 'FAN', value: cmd === 'FAN:ON' ? 'ON' : 'OFF' });
   client.publish(CONTROL_TOPIC, payload);
 }
 
