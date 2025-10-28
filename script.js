@@ -18,8 +18,8 @@ function initChart() {
     data: {
       labels: labels,
       datasets: [
-        { label: 'Temperatura (°C)', data: dataTemp, borderColor: '#e74c3c', fill: false },
-        { label: 'Umidade (%)', data: dataUmid, borderColor: '#3498db', fill: false }
+        { label: 'Temperatura (°C)', data: dataTemp, borderColor: '#cf3221ff', fill: false },
+        { label: 'Umidade (%)', data: dataUmid, borderColor: '#1c81c4ff', fill: false }
       ]
     },
     options: { animation: false, responsive: true }
@@ -76,6 +76,30 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializa botão de controle
   const btn = document.getElementById('fan-toggle-btn');
   if (btn) btn.textContent = 'LIGAR VENTILADOR';
+  // Initialize theme toggle (dark mode)
+  const themeToggle = document.getElementById('theme-toggle');
+  try {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (themeToggle) themeToggle.checked = true;
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (themeToggle) themeToggle.checked = false;
+    }
+  } catch (e) { console.warn('Could not access localStorage for theme'); }
+
+  if (themeToggle) {
+    themeToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        try { localStorage.setItem('theme', 'dark'); } catch (e) {}
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        try { localStorage.setItem('theme', 'light'); } catch (e) {}
+      }
+    });
+  }
 });
 
 function updateFanUI(isOn) {
