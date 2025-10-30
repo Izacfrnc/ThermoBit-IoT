@@ -1,4 +1,3 @@
-// Browser MQTT client over WebSocket to HiveMQ public broker
 const MQTT_WS = 'wss://broker.hivemq.com:8884/mqtt';
 const TOPIC = 'senai/iot/dh11';
 const CONTROL_TOPIC = 'senai/iot/dh11/control';
@@ -82,10 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('theme');
     if (saved === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark');
       if (themeToggle) themeToggle.checked = true;
+      console.log('Theme initialized: dark');
     } else {
       document.documentElement.removeAttribute('data-theme');
+      document.documentElement.classList.remove('dark');
       if (themeToggle) themeToggle.checked = false;
+      console.log('Theme initialized: light');
     }
   } catch (e) { console.warn('Could not access localStorage for theme'); }
 
@@ -93,12 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
     themeToggle.addEventListener('change', (e) => {
       if (e.target.checked) {
         document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.classList.add('dark');
         try { localStorage.setItem('theme', 'dark'); } catch (e) {}
+        console.log('Theme changed to dark');
       } else {
         document.documentElement.removeAttribute('data-theme');
+        document.documentElement.classList.remove('dark');
         try { localStorage.setItem('theme', 'light'); } catch (e) {}
+        console.log('Theme changed to light');
       }
     });
+  } else {
+    // If toggle input isn't found (e.g. header hidden or modified), log for debugging
+    console.warn('Theme toggle input (#theme-toggle) not found in DOM.');
   }
 });
 

@@ -1,7 +1,7 @@
 #include <DHT.h>
 #define DHTPIN 2
 #define DHTTYPE DHT11
-#define FAN_PIN 3 // pino do ventilador (mude se necessário)
+#define FAN_PIN 3 // pino do ventilador
 
 DHT dht(DHTPIN, DHTTYPE);
 

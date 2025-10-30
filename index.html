@@ -4,13 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThermoBit - Login & Dashboard</title>
+    <title>ThermoBit</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* small inline to position login overlay */
         #login-overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(0,0,0,0.35); z-index:50; }
-        /* dashboard hidden until successful login */
         #dashboard { display:none; }
     </style>
 </head>
@@ -76,11 +74,8 @@
                 <div class="card fan-card">
                     <h3>VENTILADOR</h3>
                     <div class="value" id="fan-status-text">--</div>
-                    <div class="fan-status fan-off" id="fan-status">● AGUARDANDO</div>
+                    <div class="fan-status fan-off" id="fan-status"> AGUARDANDO</div>
                     <p id="fan-reason">Aguardando dados do sensor</p>
-                    <div style="margin-top:12px;">
-                        <button class="btn btn-primary" id="fan-toggle-btn" onclick="toggleFanManual()">LIGAR VENTILADOR</button>
-                    </div>
                 </div>
             </div>
 
@@ -104,12 +99,25 @@
             </div>
 
             <!-- GRÁFICO -->
-            <div class="graph-card">
-                <h3>HISTÓRICO DE TEMPERATURA</h3>
-                <canvas id="grafico" width="400" height="200" style="background:var(--bg-secondary); border-radius:8px; padding:8px;"></canvas>
-            </div>
+<div class="graph-container">
+    <!-- Gráfico de Temperatura -->
+    <div class="graph-card">
+        <h3>HISTÓRICO DE TEMPERATURA</h3>
+        <div class="grafico-container">
+            <canvas id="grafico-temperatura" width="400" height="200"></canvas>
         </div>
+    </div>
+
+    <!-- Gráfico de Umidade -->
+    <div class="graph-card">
+        <h3>HISTÓRICO DE UMIDADE</h3>
+        <div class="grafico-container">
+            <canvas id="grafico-umidade" width="400" height="200"></canvas>
         </div>
+    </div>
+</div>
+
+</div>
 
     <!-- SCRIPTS -->
     <script>
@@ -124,7 +132,15 @@
                 const dash = document.getElementById('dashboard');
                 if (dash) dash.style.display = 'block';
                 document.getElementById('current-user').textContent = username;
-            } else {
+            } 
+            else if (username === 'carlos' && password === '123456') {
+                // hide overlay and show dashboard
+                document.getElementById('login-overlay').style.display = 'none';
+                const dash = document.getElementById('dashboard');
+                if (dash) dash.style.display = 'block';
+                document.getElementById('current-user').textContent = username;
+            }
+            else {
                 alert('Usuário ou senha incorretos!');
             }
         });
